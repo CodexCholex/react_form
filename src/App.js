@@ -10,6 +10,7 @@ function TodoListApp() {
   const [showForm, setShowForm] = useState(false);
   const [todoList, setTodoList] = useState([]);
   const [selectedTodoIndex, setSelectedTodoIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
 
   useEffect(() => { //The first useEffect hook is used to load data from local storage into the todoList state when the component mounts.
@@ -82,16 +83,44 @@ function TodoListApp() {
     const currentDate = new Date().toISOString().split("T")[0];
     return expiresAt < currentDate;
   };
+  const filteredTodoList = todoList.filter((todo) =>
+    todo.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <p className="text-4xl font-bold my-4">My To Do App</p>
+      <p className="text-4xl font-bold my-4">My  To Do App</p>
       <button
         className="bg-red-500 text-black text-3xl font-bold w-20 h-20"
         onClick={handleAddClick}
       >
         +
       </button>
+      <div className="flex items-center">
+  <input
+    className="p-2 border border-gray-400 rounded flex-grow"
+    type="text"
+    placeholder="Search..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+
+  <button className="bg-gray-300 p-2 rounded">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 text-gray-600"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        d="M8.293 2.293a1 1 0 011.414 0l5 5a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414zM5 6a5 5 0 1110 0A5 5 0 015 6z"
+        clipRule="evenodd"
+      />
+    </svg>
+  </button>
+</div>
+
 
       {showForm && (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
@@ -139,7 +168,7 @@ function TodoListApp() {
       )}
 
       <div className="mt-8">
-        {todoList.map((todo, index) => (
+        {filteredTodoList.map((todo, index) => (
           <div
             key={index}
             className={`p-4 mb-4 flex items-center ${
